@@ -1,0 +1,61 @@
+Welcome to the Tie::Scalar::Easy README file. :)
+
+Have you ever wanted to tie a scalar and just thought the it was just
+'too difficult'? Or maybe you've wanted to change the way a part of the
+scalar is accessed at runtime without re-tieing it? Well I have the
+solution for you! No messy classes for us, we tie() in style.
+
+The basic idea is to have you pass whatever functions you would like
+overriden as key/value pairs in a hash-ref argument to a new() function.
+
+The best way to explain it all is to show you the small demonstration that
+is given in the Tie::Scalar::Easy man-page, which illustrates how
+to create a scalar that returns a random number each time it is read from.
+
+use Tie::Scalar::Easy;
+
+srand(time ^ $$);        # needed before perl-5.004
+new Tie::Scalar::Easy(\$random, {
+    FETCH => sub { return int(rand(100) + .5) } });
+print "$random, $random, $random, $random\n";
+
+The above code is functionally equivelant to:
+
+package RandomScalar;
+require Tie::Scalar;
+@ISA = qw(Tie::StdScalar);
+sub FETCH { return int(rand(100) + .5) }
+package main;
+srand(time ^ $$);
+tie($random, RandomScalar);
+print "$random, $random, $random, $random\n";
+
+There is obviously a slight code-size improvement, and the Easy version 
+looks easier to understand. And, perhaps it's just me, but creating a
+whole class just for a single function for a single variable seems like
+overkill once Tie::Scalar::Easy has been created.
+
+One of the fun things that you can easily do with Tie::Scalar::Easy is
+override access functions at run-time.
+
+tied($random)->{'STORE'} => sub { srand($_[1]) };
+
+It has a million other uses, but I'll leave it to the imagination of the
+reader, as I don't intend to get a RSI just for one silly Perl module.
+
+If my sales pitch was successful, just download the most recent
+EasyScalar-x.xx.tar.gz file from your local CPAN mirror, extract it,
+follow the instructions in INSTALL, && have lots of fun || die.
+
+If you find a bug or other error, I can be reached at jql@accessone.com.
+Hell, if you just have a creative use for my module, e-mail me. I don't
+get nearly enough e-mail. I won't mind.
+
+<LEGALESE>
+
+Copyright (C) 1997 Ashley Winters <jql@accessone.com>. All rights reserved.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+</LEGALESE>

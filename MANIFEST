@@ -1,0 +1,10 @@
+Changes
+Easy.pm
+INSTALL
+MANIFEST
+Makefile.PL
+README
+t/destroy.t
+t/fetch.t
+t/new.t
+t/store.t
